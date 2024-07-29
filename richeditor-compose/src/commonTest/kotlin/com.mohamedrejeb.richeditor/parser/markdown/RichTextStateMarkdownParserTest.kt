@@ -3,6 +3,7 @@ package com.mohamedrejeb.richeditor.parser.markdown
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -22,6 +23,24 @@ class RichTextStateMarkdownParserTest {
 
         assertEquals(
             expected = SpanStyle(fontWeight = FontWeight.Bold),
+            actual = state.richParagraphList.first().children.first().spanStyle
+        )
+    }
+
+    @Test
+    fun testUnderline() {
+        val markdown = "<ins>Hello World!</ins>"
+        val expectedText = "Hello World!"
+        val state = RichTextStateMarkdownParser.encode(markdown)
+        val actualText = state.annotatedString.text
+
+        assertEquals(
+            expected = expectedText,
+            actual = actualText,
+        )
+
+        assertEquals(
+            expected = SpanStyle(textDecoration = TextDecoration.Underline),
             actual = state.richParagraphList.first().children.first().spanStyle
         )
     }
@@ -52,11 +71,9 @@ class RichTextStateMarkdownParserTest {
         )
     }
 
-
-
     @Test
     fun testBoldWithNestedItalicAndUnderline() {
-        val markdown = "**Hello *World!***"
+        val markdown = "**Hello <ins>*World!*</ins>**"
         val expectedText = "Hello World!"
         val state = RichTextStateMarkdownParser.encode(markdown)
         val actualText = state.annotatedString.text
@@ -68,6 +85,7 @@ class RichTextStateMarkdownParserTest {
 
         val firstChild = state.richParagraphList.first().children.first()
         val secondChild = firstChild.children.first()
+        val thirdChild = secondChild.children.first()
 
         assertEquals(
             expected = SpanStyle(fontWeight = FontWeight.Bold),
@@ -75,8 +93,13 @@ class RichTextStateMarkdownParserTest {
         )
 
         assertEquals(
-            expected = SpanStyle(fontStyle = FontStyle.Italic),
+            expected = SpanStyle(textDecoration = TextDecoration.Underline),
             actual = secondChild.spanStyle
+        )
+
+        assertEquals(
+            expected = SpanStyle(fontStyle = FontStyle.Italic),
+            actual = thirdChild.spanStyle
         )
     }
 

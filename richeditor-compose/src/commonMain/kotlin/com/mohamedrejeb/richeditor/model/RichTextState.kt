@@ -25,6 +25,7 @@ import com.mohamedrejeb.richeditor.paragraph.type.*
 import com.mohamedrejeb.richeditor.paragraph.type.ParagraphType.Companion.startText
 import com.mohamedrejeb.richeditor.parser.html.RichTextStateHtmlParser
 import com.mohamedrejeb.richeditor.parser.markdown.RichTextStateMarkdownParser
+import com.mohamedrejeb.richeditor.parser.text.RichTextStateTextParser
 import com.mohamedrejeb.richeditor.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -2996,8 +2997,9 @@ public class RichTextState internal constructor(
      *
      * @return The text string.
      */
-    public fun toText(): String =
-        toText(richParagraphList = richParagraphList)
+    public fun toText(): String {
+        return RichTextStateTextParser.decode(this)
+    }
 
     /**
      * Decodes the [RichTextState] to a html string.
